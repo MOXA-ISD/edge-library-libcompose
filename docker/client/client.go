@@ -90,12 +90,12 @@ func Create(c Options) (client.APIClient, error) {
 		tr := &http.Transport{
 			TLSClientConfig: config,
 		}
-		proto, addr, _, err := client.ParseHost(c.Host)
+		clientURL, err := client.ParseHostURL(c.Host)
 		if err != nil {
 			return nil, err
 		}
 
-		if err := sockets.ConfigureTransport(tr, proto, addr); err != nil {
+		if err := sockets.ConfigureTransport(tr, clientURL.Scheme, clientURL.Host); err != nil {
 			return nil, err
 		}
 
