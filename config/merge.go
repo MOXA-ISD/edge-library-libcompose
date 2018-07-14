@@ -32,7 +32,7 @@ func CreateConfig(bytes []byte) (*Config, error) {
 		return nil, err
 	}
 
-	if config.Version != "2" {
+	if !strings.HasPrefix(config.Version, "2") {
 		var baseRawServices RawServiceMap
 		if err := yaml.Unmarshal(bytes, &baseRawServices); err != nil {
 			return nil, err
@@ -103,7 +103,7 @@ func Merge(existingServices *ServiceConfigs, environmentLookup EnvironmentLookup
 	}
 
 	var serviceConfigs map[string]*ServiceConfig
-	if config.Version == "2" {
+	if strings.HasPrefix(config.Version, "2") {
 		var err error
 		serviceConfigs, err = MergeServicesV2(existingServices, environmentLookup, resourceLookup, file, baseRawServices, options)
 		if err != nil {
