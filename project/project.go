@@ -557,3 +557,8 @@ func (p *Project) GetServiceConfig(name string) (*config.ServiceConfig, bool) {
 func IsNamedVolume(volume string) bool {
 	return !strings.HasPrefix(volume, ".") && !strings.HasPrefix(volume, "/") && !strings.HasPrefix(volume, "~")
 }
+
+// GetServices return name of all services
+func (p *Project) GetServiceNames() []string {
+	return p.ServiceConfigs.Keys()
+}
