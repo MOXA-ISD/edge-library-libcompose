@@ -312,7 +312,7 @@ func (p *Project) handleNetworkConfig() {
 }
 
 func (p *Project) isNetworkEnabled() bool {
-	return p.configVersion == "2"
+	return strings.HasPrefix(p.configVersion, "2")
 }
 
 func (p *Project) handleVolumeConfig() {
