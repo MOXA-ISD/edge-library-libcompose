@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/docker/libcompose/project/events"
-	log "github.com/sirupsen/logrus"
 )
 
 type serviceWrapper struct {
@@ -37,7 +36,7 @@ func (s *serviceWrapper) Reset() error {
 	if s.state != StateExecuted {
 		service, err := s.project.CreateService(s.name)
 		if err != nil {
-			log.Errorf("Failed to create service for %s : %v", s.name, err)
+			logrus.Errorf("Failed to create service for %s : %v", s.name, err)
 			return err
 		}
 
@@ -76,7 +75,7 @@ func (s *serviceWrapper) waitForDeps(wrappers map[string]*serviceWrapper) bool {
 				return false
 			}
 		} else {
-			log.Errorf("Failed to find %s", dep.Target)
+			logrus.Errorf("Failed to find %s", dep.Target)
 		}
 	}
 
@@ -103,7 +102,7 @@ func (s *serviceWrapper) Do(wrappers map[string]*serviceWrapper, start, done eve
 		s.project.Notify(done, s.service.Name(), nil)
 		s.project.Notify(events.ProjectReloadTrigger, s.service.Name(), nil)
 	} else if s.err != nil {
-		log.Errorf("Failed %s %s : %v", start, s.name, s.err)
+		logrus.Errorf("Failed %s %s : %v", start, s.name, s.err)
 	} else {
 		s.project.Notify(done, s.service.Name(), nil)
 	}

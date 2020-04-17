@@ -6,8 +6,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-
-	"github.com/sirupsen/logrus"
 )
 
 // relativePath returns the proper relative path for the given file path. If

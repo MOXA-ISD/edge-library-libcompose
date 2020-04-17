@@ -8,7 +8,7 @@ import (
 	"runtime"
 
 	cliconfig "github.com/docker/cli/cli/config"
-	"github.com/docker/docker/client"
+	dockerclient "github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/homedir"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
@@ -44,17 +44,23 @@ type Options struct {
 	APIVersion string
 }
 
+var singleton *dockerclient.Client
+
 // Create creates a docker client based on the specified options.
-func Create(c Options) (client.APIClient, error) {
+func Create(c Options) (dockerclient.APIClient, error) {
+	if singleton != nil {
+		return singleton, nil
+	}
 	if c.Host == "" {
 		if os.Getenv("DOCKER_API_VERSION") == "" {
 			os.Setenv("DOCKER_API_VERSION", DefaultAPIVersion)
 		}
-		client, err := client.NewEnvClient()
+		myclient, err := dockerclient.NewEnvClient()
 		if err != nil {
 			return nil, err
 		}
-		return client, nil
+		singleton = myclient
+		return myclient, nil
 	}
 
 	apiVersion := c.APIVersion
@@ -90,7 +96,7 @@ func Create(c Options) (client.APIClient, error) {
 		tr := &http.Transport{
 			TLSClientConfig: config,
 		}
-		clientURL, err := client.ParseHostURL(c.Host)
+		clientURL, err := dockerclient.ParseHostURL(c.Host)
 		if err != nil {
 			return nil, err
 		}
@@ -107,9 +113,10 @@ func Create(c Options) (client.APIClient, error) {
 	customHeaders := map[string]string{}
 	customHeaders["User-Agent"] = fmt.Sprintf("Libcompose-Client/%s (%s)", version.VERSION, runtime.GOOS)
 
-	client, err := client.NewClient(c.Host, apiVersion, httpClient, customHeaders)
+	myclient, err := dockerclient.NewClient(c.Host, apiVersion, httpClient, customHeaders)
 	if err != nil {
 		return nil, err
 	}
-	return client, nil
+	singleton = myclient
+	return myclient, nil
 }

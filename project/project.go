@@ -16,7 +16,6 @@ import (
 	"github.com/docker/libcompose/project/events"
 	"github.com/docker/libcompose/utils"
 	"github.com/docker/libcompose/yaml"
-	log "github.com/sirupsen/logrus"
 )
 
 // ComposeVersion is name of docker-compose.yml file syntax supported version
@@ -78,7 +77,7 @@ func NewProject(context *Context, runtime RuntimeProject, parseOptions *config.P
 		}
 
 		if err != nil {
-			log.Errorf("Could not get the rooted path name to the current directory: %v", err)
+			logrus.Errorf("Could not get the rooted path name to the current directory: %v", err)
 			return nil
 		}
 		context.EnvironmentLookup = &lookup.ComposableEnvLookup{
@@ -214,7 +213,7 @@ func (p *Project) Load(bytes []byte) error {
 func (p *Project) load(file string, bytes []byte) error {
 	version, serviceConfigs, volumeConfigs, networkConfigs, err := config.Merge(p.ServiceConfigs, p.context.EnvironmentLookup, p.context.ResourceLookup, file, bytes, p.ParseOptions)
 	if err != nil {
-		log.Errorf("Could not parse config for project %s : %v", p.Name, err)
+		logrus.Errorf("Could not parse config for project %s : %v", p.Name, err)
 		return err
 	}
 
@@ -413,18 +412,18 @@ func (p *Project) startService(wrappers map[string]*serviceWrapper, history []st
 	for _, dep := range wrapper.service.DependentServices() {
 		target := wrappers[dep.Target]
 		if target == nil {
-			log.Debugf("Failed to find %s", dep.Target)
+			logrus.Debugf("Failed to find %s", dep.Target)
 			return fmt.Errorf("Service '%s' has a link to service '%s' which is undefined", wrapper.name, dep.Target)
 		}
 
 		if utils.Contains(history, dep.Target) {
 			cycle := strings.Join(append(history, dep.Target), "->")
 			if dep.Optional {
-				log.Debugf("Ignoring cycle for %s", cycle)
+				logrus.Debugf("Ignoring cycle for %s", cycle)
 				wrapper.IgnoreDep(dep.Target)
 				if cycleAction != nil {
 					var err error
-					log.Debugf("Running cycle action for %s", cycle)
+					logrus.Debugf("Running cycle action for %s", cycle)
 					err = cycleAction(target.service)
 					if err != nil {
 						return err
@@ -444,7 +443,7 @@ func (p *Project) startService(wrappers map[string]*serviceWrapper, history []st
 	}
 
 	if isSelected(wrapper, selected) {
-		log.Debugf("Launching action for %s", wrapper.name)
+		logrus.Debugf("Launching action for %s", wrapper.name)
 		go action(wrapper, wrappers)
 	} else {
 		wrapper.Ignore()
@@ -497,7 +496,7 @@ func (p *Project) traverse(start bool, selected map[string]bool, wrappers map[st
 		if err := wrapper.Wait(); err == ErrRestart {
 			restart = true
 		} else if err != nil {
-			log.Errorf("Failed to start: %s : %v", wrapper.name, err)
+			logrus.Errorf("Failed to start: %s : %v", wrapper.name, err)
 			if firstError == nil {
 				firstError = err
 			}
@@ -507,7 +506,7 @@ func (p *Project) traverse(start bool, selected map[string]bool, wrappers map[st
 	if restart {
 		if p.ReloadCallback != nil {
 			if err := p.ReloadCallback(); err != nil {
-				log.Errorf("Failed calling callback: %v", err)
+				logrus.Errorf("Failed calling callback: %v", err)
 			}
 		}
 		return p.traverse(false, selected, wrappers, action, cycleAction)

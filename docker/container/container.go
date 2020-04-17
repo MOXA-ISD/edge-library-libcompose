@@ -22,7 +22,7 @@ import (
 	"github.com/docker/libcompose/labels"
 	"github.com/docker/libcompose/logger"
 	"github.com/docker/libcompose/project"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Container holds information about a docker container and the service it is tied on.
@@ -301,9 +301,9 @@ func holdHijackedConnection(tty bool, inputStream io.ReadCloser, outputStream, e
 
 // Start the specified container with the specified host config
 func (c *Container) Start(ctx context.Context) error {
-	logrus.WithFields(logrus.Fields{"container.ID": c.container.ID, "container.Name": c.container.Name}).Debug("Starting container")
+	logrus.WithFields(log.Fields{"container.ID": c.container.ID, "container.Name": c.container.Name}).Debug("Starting container")
 	if err := c.client.ContainerStart(ctx, c.container.ID, types.ContainerStartOptions{}); err != nil {
-		logrus.WithFields(logrus.Fields{"container.ID": c.container.ID, "container.Name": c.container.Name}).Debug("Failed to start container")
+		logrus.WithFields(log.Fields{"container.ID": c.container.ID, "container.Name": c.container.Name}).Debug("Failed to start container")
 		return err
 	}
 	return nil
@@ -339,7 +339,7 @@ func (c *Container) Log(ctx context.Context, l logger.Logger, follow bool) error
 	} else {
 		_, err = stdcopy.StdCopy(&logger.Wrapper{Logger: l}, &logger.Wrapper{Logger: l, Err: true}, responseBody)
 	}
-	logrus.WithFields(logrus.Fields{"Logger": l, "err": err}).Debug("c.client.Logs() returned error")
+	logrus.WithFields(log.Fields{"Logger": l, "err": err}).Debug("c.client.Logs() returned error")
 
 	return err
 }

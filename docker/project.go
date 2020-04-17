@@ -14,7 +14,6 @@ import (
 	"github.com/docker/libcompose/docker/volume"
 	"github.com/docker/libcompose/labels"
 	"github.com/docker/libcompose/project"
-	"github.com/sirupsen/logrus"
 )
 
 // NewProject creates a Project with the specified context.

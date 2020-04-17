@@ -4,7 +4,6 @@ import (
 	"bytes"
 
 	"github.com/docker/libcompose/project/events"
-	"github.com/sirupsen/logrus"
 )
 
 var (

@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"golang.org/x/net/context"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Scale scales the specified services.
@@ -30,7 +28,7 @@ func (p *Project) Scale(ctx context.Context, timeout int, servicesScale map[stri
 
 	for _, name := range order {
 		scale := servicesScale[name]
-		log.Infof("Setting scale %s=%d...", name, scale)
+		logrus.Infof("Setting scale %s=%d...", name, scale)
 		err := services[name].Scale(ctx, scale, timeout)
 		if err != nil {
 			return fmt.Errorf("Failed to set the scale %s=%d: %v", name, scale, err)

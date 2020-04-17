@@ -3,7 +3,6 @@ package network
 import (
 	"fmt"
 	"reflect"
-	"strings"
 
 	"golang.org/x/net/context"
 
@@ -191,9 +190,9 @@ func NetworksFromServices(cli client.NetworkAPIClient, projectName string, netwo
 				unused = append(unused, name)
 			}
 		}
-		if len(unused) != 0 {
-			err = fmt.Errorf("Some networks were defined but are not used by any service: %v", strings.Join(unused, " "))
-		}
+		// if len(unused) != 0 {
+		// 	err = fmt.Errorf("Some networks were defined but are not used by any service: %v", strings.Join(unused, " "))
+		// }
 	}
 	return &Networks{
 		networks:       networks,

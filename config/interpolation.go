@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
-
-	"github.com/sirupsen/logrus"
 )
 
 var defaultValues = make(map[string]string)

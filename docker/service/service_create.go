@@ -16,7 +16,6 @@ import (
 	"github.com/docker/libcompose/project"
 	"github.com/docker/libcompose/project/events"
 	util "github.com/docker/libcompose/utils"
-	"github.com/sirupsen/logrus"
 )
 
 func (s *Service) createContainer(ctx context.Context, namer Namer, oldContainer string, configOverride *config.ServiceConfig, oneOff bool) (*composecontainer.Container, error) {

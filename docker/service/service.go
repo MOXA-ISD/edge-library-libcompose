@@ -25,7 +25,7 @@ import (
 	"github.com/docker/libcompose/project/options"
 	"github.com/docker/libcompose/utils"
 	"github.com/docker/libcompose/yaml"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Service is a project.Service implementations.
@@ -445,7 +445,7 @@ func (s *Service) recreateIfNeeded(ctx context.Context, c *container.Container, 
 		return c, err
 	}
 
-	logrus.WithFields(logrus.Fields{
+	logrus.WithFields(log.Fields{
 		"outOfSync":     outOfSync,
 		"ForceRecreate": forceRecreate,
 		"NoRecreate":    noRecreate}).Debug("Going to decide if recreate is needed")
